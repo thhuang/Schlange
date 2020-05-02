@@ -1,5 +1,5 @@
 * [[https://thhuang.github.io/Schlange/#/game][Schlange]]
-👆 This is a snake game! Just try it!!!
+👆 This is a snake game! Try it!
 
 ** Snake Navigation
 |          | Keyboard | Mobile      |
