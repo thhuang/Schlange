@@ -13,6 +13,7 @@ final mainTextTheme = TextTheme(
     fontSize: 20.0,
     color: Colors.white,
     fontFamily: 'FiraSans',
+    height: 1.3,
   ),
 );
 

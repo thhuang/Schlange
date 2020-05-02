@@ -21,3 +21,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: FiraSans
+      fonts:
+        - asset: assets/fonts/FiraSans/FiraSans-Regular.ttf
