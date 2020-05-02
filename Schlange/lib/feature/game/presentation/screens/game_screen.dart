@@ -37,23 +37,31 @@ class LargeGameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Spacer(flex: 3),
-          SizedBox(height: 30.0),
-          Text(
-            'Schlange!',
-            style: textTheme.headline1,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: FittedBox(
+        child: SizedBox(
+          height: 700.0,
+          width: 500.0,
+          child: Column(
+            children: <Widget>[
+              Spacer(flex: 3),
+              SizedBox(height: 30.0),
+              Text(
+                'Schlange!',
+                style: textTheme.headline1,
+              ),
+              SizedBox(height: 15.0),
+              ScoreDisplayer(textTheme: textTheme),
+              SizedBox(height: 15.0),
+              GameBoard(),
+              SizedBox(height: 15.0),
+              ProgressDisplayer(textTheme: textTheme),
+              Spacer(flex: 20),
+            ],
           ),
-          SizedBox(height: 10.0),
-          ScoreDisplayer(textTheme: textTheme),
-          SizedBox(height: 10.0),
-          GameBoard(),
-          SizedBox(height: 10.0),
-          ProgressDisplayer(textTheme: textTheme),
-          Spacer(flex: 10),
-        ],
+        ),
       ),
     );
   }

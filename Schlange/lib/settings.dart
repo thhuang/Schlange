@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 const FREQUENCY = 20;
 
-const BOARD_HEIGHT = 30;
-const BOARD_WIDTH = 30;
+const BOARD_HEIGHT = 35;
+const BOARD_WIDTH = 35;
 const BLOCK_HEIGHT = 10.0;
 const BLOCK_WIDTH = 10.0;
 

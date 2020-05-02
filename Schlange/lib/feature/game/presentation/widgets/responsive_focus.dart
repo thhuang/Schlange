@@ -29,17 +29,42 @@ class _ResponsiveFocusState extends State<ResponsiveFocus> {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      focusNode: _focusNode,
-      autofocus: true,
-      onKey: onKeyPressed,
-      child: ResponsiveLayout(
-        largeChild: widget.largeChild,
+    return GestureDetector(
+      onPanUpdate: _onPanUpdate,
+      child: Focus(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKey: _onKeyPressed,
+        child: ResponsiveLayout(
+          largeChild: widget.largeChild,
+        ),
       ),
     );
   }
 
-  bool onKeyPressed(FocusNode node, RawKeyEvent event) {
+  void _onPanUpdate(DragUpdateDetails detail) {
+    final up = detail.delta.dy < -7.0;
+    final down = detail.delta.dy > 7.0;
+    final left = detail.delta.dx < -7.0;
+    final right = detail.delta.dx > 7.0;
+
+    var game = Provider.of<GameChangeNotifier>(
+      context,
+      listen: false,
+    );
+
+    if (up) {
+      game.currentDirection = Direction.up;
+    } else if (down) {
+      game.currentDirection = Direction.down;
+    } else if (left) {
+      game.currentDirection = Direction.left;
+    } else if (right) {
+      game.currentDirection = Direction.right;
+    }
+  }
+
+  bool _onKeyPressed(FocusNode node, RawKeyEvent event) {
     if (event.runtimeType != RawKeyDownEvent) return false;
 
     final up = event.logicalKey == LogicalKeyboardKey.arrowUp;
