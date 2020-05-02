@@ -15,9 +15,7 @@ class _GameBoardState extends State<GameBoard>
   AnimationController _controller;
 
   // TODO: duration as a parameter
-  final duration = Duration(milliseconds: 100);
-  var displacement = 0.0;
-  var shouldIterate = false;
+  final duration = Duration(milliseconds: 30);
 
   @override
   void initState() {
@@ -27,11 +25,11 @@ class _GameBoardState extends State<GameBoard>
       value: 0.0,
       duration: duration,
     )
-      ..addListener(() => setState(() => displacement = _controller.value))
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          setState(() => shouldIterate = true);
+          Provider.of<GameChangeNotifier>(context, listen: false).iterate();
           _controller.reset();
+          _controller.forward();
         }
       })
       ..forward();
@@ -45,11 +43,6 @@ class _GameBoardState extends State<GameBoard>
 
   @override
   Widget build(BuildContext context) {
-    if (shouldIterate) {
-      setState(() => shouldIterate = false);
-      _controller.forward();
-      Provider.of<GameChangeNotifier>(context, listen: false).iterate();
-    }
     return Consumer<GameChangeNotifier>(builder: (context, game, _) {
       return Container(
         child: Column(

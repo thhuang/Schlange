@@ -9,6 +9,11 @@ final mainTextTheme = TextTheme(
     color: Colors.white,
     fontFamily: 'FiraSans',
   ),
+  headline2: TextStyle(
+    fontSize: 20.0,
+    color: Colors.white,
+    fontFamily: 'FiraSans',
+  ),
 );
 
 final providers = [];
@@ -22,6 +27,7 @@ class SchlangeApp extends StatelessWidget {
       theme: theme.copyWith(
         textTheme: mainTextTheme,
       ),
+      debugShowCheckedModeBanner: false,
       initialRoute: GameScreen.ID,
       routes: {
         GameScreen.ID: (context) => GameScreen(),
