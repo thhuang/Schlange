@@ -98,6 +98,7 @@ class GameChangeNotifier with ChangeNotifier {
   void _snakeLengthen(Coordinate newHead) {
     _gameBoardBlocks[newHead] = BlockSnack();
     _snake.addFirst(SnakeNode(newHead));
+    _newTarget();
   }
 
   void _snakeMove(Coordinate newHead) {
@@ -116,7 +117,6 @@ class GameChangeNotifier with ChangeNotifier {
       );
     } while (_gameBoardBlocks[_target].state != BlockState.vacant);
     _gameBoardBlocks[_target] = BlockTargeted();
-    _newTarget();
   }
 
   Coordinate get _snakeHead {

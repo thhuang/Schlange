@@ -54,7 +54,7 @@ class _GameBoardState extends State<GameBoard>
       return Container(
         child: Column(
           children: <Widget>[
-            for (var j = 0; j < game.boardHeight; j++)
+            for (var j = game.boardHeight - 1; j >= 0; j--)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
