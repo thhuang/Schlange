@@ -1,3 +1,10 @@
-# Schlange
-👆 This is a snake game!
+* [[https://thhuang.github.io/Schlange/#/game][Schlange]]
+👆 This is a snake game! Just try it!!!
 
+** Snake Navigation
+|          | Keyboard | Mobile      |
+|----------+----------+-------------|
+| Go Up    | =↑=      | swipe up    |
+| Go Down  | =↓=      | swipe down  |
+| Go Left  | =←=      | swipe left  |
+| Go Right | =→=      | swipe right |
