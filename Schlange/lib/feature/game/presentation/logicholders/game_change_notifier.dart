@@ -4,10 +4,11 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../settings.dart';
+import '../widgets/block.dart';
+
 enum Direction { up, down, left, right }
 const DirectionHorizontal = {Direction.left, Direction.right};
-
-enum BlockState { vacant, blocked, targeted, snake }
 
 class GameChangeNotifier with ChangeNotifier {
   GameChangeNotifier({
@@ -23,23 +24,14 @@ class GameChangeNotifier with ChangeNotifier {
         assert(rewardTimeFactor > 0),
         _boardHeight = boardHeight,
         _boardWidth = boardWidth,
-        _blockHeight = blockHeight,
-        _blockWidth = blockWidth,
-        _end = false,
-        _startTime = DateTime.now(),
-        _now = DateTime.now(),
-        _score = 0,
         _baseReward = baseReward,
         _rewardTimeFactor = rewardTimeFactor,
         _rewardLengthFactor = rewardLengthFactor {
     // initiate the game board
-    _gameBoardBlocks = <Coordinate, Block>{
+    _gameBoardBlockStates = <Coordinate, BlockState>{
       for (var i = 0; i < boardWidth; i++)
         for (var j = 0; j < boardHeight; j++)
-          Coordinate(i, j): BlockVacant(
-            height: _blockHeight,
-            width: _blockWidth,
-          ),
+          Coordinate(i, j): BlockState.vacant
     };
 
     // initiate the snake
@@ -51,37 +43,40 @@ class GameChangeNotifier with ChangeNotifier {
     for (var i = 0; i < initialLength; i++) {
       final coordinate = Coordinate(x-- % _boardWidth, y % _boardHeight);
       _snake.add(SnakeNode(coordinate));
-      _gameBoardBlocks[coordinate] = BlockSnake(
-        height: _blockHeight,
-        width: _blockWidth,
-      );
+      _gameBoardBlockStates[coordinate] = BlockState.snake;
     }
 
     // generate the target
     _newTarget();
 
-    // iterate
-    iterate();
+    // loop
+    loop();
   }
 
-  DateTime _startTime;
-  DateTime _now;
+  DateTime _startTime = DateTime.now();
+  DateTime _now = DateTime.now();
   DateTime _lastTargetTime;
-  int _score;
+  int _score = 0;
   int _baseReward;
   int _rewardTimeFactor;
   int _rewardLengthFactor;
-  int _reward;
+  int _reward = 0;
   LinkedList<SnakeNode> _snake;
   Direction _currentDirection;
   Direction _nextDirection;
   Coordinate _target;
   int _boardHeight;
   int _boardWidth;
-  double _blockHeight;
-  double _blockWidth;
-  Map<Coordinate, Block> _gameBoardBlocks;
-  bool _end;
+  Map<Coordinate, BlockState> _gameBoardBlockStates;
+  Map<Coordinate, void Function(BlockState)> _blockCallbacks = {};
+  bool _end = false;
+
+  Future<void> loop() async {
+    do {
+      iterate();
+      await Future.delayed(Duration(milliseconds: 1000 ~/ FREQUENCY));
+    } while (!_end);
+  }
 
   void iterate() {
     if (_end) return;
@@ -89,8 +84,15 @@ class GameChangeNotifier with ChangeNotifier {
     _now = DateTime.now();
     updateGameBoard();
     updateReward();
-
     notifyListeners();
+  }
+
+  void registerBlockCallback(
+    Coordinate coordinate,
+    void Function(BlockState) callback,
+  ) {
+    _blockCallbacks[coordinate] = callback;
+    callback(_gameBoardBlockStates[coordinate]);
   }
 
   Coordinate _nextBlockCoordinate() {
@@ -129,7 +131,7 @@ class GameChangeNotifier with ChangeNotifier {
 
   void updateGameBoard() {
     final nextBlockCoordinate = _nextBlockCoordinate();
-    switch (_gameBoardBlocks[nextBlockCoordinate].state) {
+    switch (_gameBoardBlockStates[nextBlockCoordinate]) {
       case BlockState.snake:
       case BlockState.blocked:
         _end = true;
@@ -152,26 +154,28 @@ class GameChangeNotifier with ChangeNotifier {
   }
 
   void _snakeLengthen(Coordinate newHead) {
-    _gameBoardBlocks[newHead] = BlockSnake(
-      height: _blockHeight,
-      width: _blockWidth,
-    );
+    _gameBoardBlockStates[newHead] = BlockState.snake;
     _snake.addFirst(SnakeNode(newHead));
+    if (_blockCallbacks[newHead] != null)
+      _blockCallbacks[newHead](_gameBoardBlockStates[newHead]);
+
     _score += _reward;
+
     _newTarget();
   }
 
   void _snakeMove(Coordinate newHead) {
-    _gameBoardBlocks[newHead] = BlockSnake(
-      height: _blockHeight,
-      width: _blockWidth,
-    );
-    _gameBoardBlocks[_snake.last.coordinate] = BlockVacant(
-      height: _blockHeight,
-      width: _blockWidth,
-    );
+    _gameBoardBlockStates[newHead] = BlockState.snake;
     _snake.addFirst(SnakeNode(newHead));
-    _snake.last.unlink();
+    if (_blockCallbacks[newHead] != null)
+      _blockCallbacks[newHead](_gameBoardBlockStates[newHead]);
+
+    final tail = _snake.last;
+    _gameBoardBlockStates[tail.coordinate] = BlockState.vacant;
+    if (_blockCallbacks[_snake.last.coordinate] != null)
+      _blockCallbacks[tail.coordinate](_gameBoardBlockStates[tail.coordinate]);
+
+    tail.unlink();
   }
 
   void _newTarget() {
@@ -181,11 +185,10 @@ class GameChangeNotifier with ChangeNotifier {
         random.nextInt(boardWidth),
         random.nextInt(boardHeight),
       );
-    } while (_gameBoardBlocks[_target].state != BlockState.vacant);
-    _gameBoardBlocks[_target] = BlockTargeted(
-      height: _blockHeight,
-      width: _blockWidth,
-    );
+    } while (_gameBoardBlockStates[_target] != BlockState.vacant);
+    _gameBoardBlockStates[_target] = BlockState.targeted;
+    if (_blockCallbacks[_snake.last.coordinate] != null)
+      _blockCallbacks[_target](_gameBoardBlockStates[_target]);
     _lastTargetTime = DateTime.now();
   }
 
@@ -203,9 +206,9 @@ class GameChangeNotifier with ChangeNotifier {
     _nextDirection = direction;
   }
 
-  Block getBlock(Coordinate coordinate) {
-    final ret = _gameBoardBlocks[coordinate];
-    return ret == null ? Block(height: _blockHeight, width: _blockWidth) : ret;
+  BlockState getBlockState(Coordinate coordinate) {
+    final ret = _gameBoardBlockStates[coordinate];
+    return ret == null ? BlockState.vacant : ret;
   }
 
   int get boardHeight {
@@ -232,6 +235,10 @@ class GameChangeNotifier with ChangeNotifier {
   int get reward {
     return _reward;
   }
+
+  void stop() {
+    _end = true;
+  }
 }
 
 class SnakeNode extends LinkedListEntry<SnakeNode> {
@@ -254,95 +261,4 @@ class Coordinate extends Equatable {
 
   @override
   List<Object> get props => [x, y];
-}
-
-class Block extends StatelessWidget {
-  const Block({
-    Key key,
-    this.state = BlockState.vacant,
-    this.height = 10.0,
-    this.width = 10.0,
-  })  : assert(height != null),
-        assert(width != null),
-        super(key: key);
-
-  final BlockState state;
-  final double height;
-  final double width;
-
-  @override
-  Widget build(BuildContext context) {
-    Color color;
-    switch (state) {
-      case BlockState.snake:
-        color = Colors.black87;
-        break;
-      case BlockState.targeted:
-        color = Colors.red[400];
-        break;
-      case BlockState.blocked:
-        color = Colors.indigo[900];
-        break;
-      case BlockState.vacant:
-      default:
-        color = Colors.blue[100];
-        break;
-    }
-    return Container(
-      height: height,
-      width: width,
-      color: color,
-    );
-  }
-}
-
-class BlockVacant extends Block {
-  const BlockVacant({
-    Key key,
-    height = 10.0,
-    width = 10.0,
-  }) : super(
-          key: key,
-          height: height,
-          width: width,
-        );
-}
-
-class BlockSnake extends Block {
-  const BlockSnake({
-    Key key,
-    height = 10.0,
-    width = 10.0,
-  }) : super(
-          key: key,
-          state: BlockState.snake,
-          height: height,
-          width: width,
-        );
-}
-
-class BlockTargeted extends Block {
-  const BlockTargeted({
-    Key key,
-    height = 10.0,
-    width = 10.0,
-  }) : super(
-          key: key,
-          state: BlockState.targeted,
-          height: height,
-          width: width,
-        );
-}
-
-class BlockBlocked extends Block {
-  const BlockBlocked({
-    Key key,
-    height = 10.0,
-    width = 10.0,
-  }) : super(
-          key: key,
-          state: BlockState.blocked,
-          height: height,
-          width: width,
-        );
 }
