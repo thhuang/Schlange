@@ -32,7 +32,7 @@ class SchlangeApp extends StatelessWidget {
       initialRoute: GameScreen.ID,
       routes: {
         GameScreen.ID: (context) => GameScreen(),
-        LandingScreen.ID: (context) => LandingScreen(),
+        // LandingScreen.ID: (context) => LandingScreen(),
       },
     );
   }

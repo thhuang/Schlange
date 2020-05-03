@@ -7,7 +7,7 @@ import '../widgets/game_board.dart';
 import '../widgets/responsive_focus.dart';
 
 class GameScreen extends StatelessWidget {
-  static const String ID = '/game';
+  static const String ID = '/';
 
   @override
   Widget build(BuildContext context) {
