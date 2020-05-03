@@ -1,4 +1,4 @@
-* [[https://thhuang.github.io/Schlange/#/game][Schlange]]
+* [[https://thhuang.github.io/Schlange][Schlange]]
 👆 This is a snake game! Try it!
 
 ** Snake Navigation
