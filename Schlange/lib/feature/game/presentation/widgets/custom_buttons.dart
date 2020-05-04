@@ -86,6 +86,7 @@ class CircleButton extends StatelessWidget {
       focusColor: Colors.transparent,
       highlightColor: Colors.transparent,
       constraints: BoxConstraints(minWidth: 10.0, minHeight: 10.0),
+      autofocus: true,
     );
   }
 }
