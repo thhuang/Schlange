@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ButtonUp extends OptionButton {
-  ButtonUp({Color color, void Function() onPressed})
+  ButtonUp({Color color, @required void Function() onPressed})
       : super(FontAwesomeIcons.caretUp, color: color, onPressed: onPressed);
 }
 
 class ButtonDown extends OptionButton {
-  ButtonDown({Color color, void Function() onPressed})
+  ButtonDown({Color color, @required void Function() onPressed})
       : super(FontAwesomeIcons.caretDown, color: color, onPressed: onPressed);
 }
 
 class ButtonLeft extends OptionButton {
-  ButtonLeft({Color color, void Function() onPressed})
+  ButtonLeft({Color color, @required void Function() onPressed})
       : super(FontAwesomeIcons.caretLeft, color: color, onPressed: onPressed);
 }
 
 class ButtonRight extends OptionButton {
-  ButtonRight({Color color, void Function() onPressed})
+  ButtonRight({Color color, @required void Function() onPressed})
       : super(FontAwesomeIcons.caretRight, color: color, onPressed: onPressed);
 }
 

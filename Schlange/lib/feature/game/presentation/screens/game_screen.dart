@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../settings.dart';
 import '../logicholders/game_change_notifier.dart';
+import '../widgets/custom_buttons.dart';
 import '../widgets/game_board.dart';
 import '../widgets/responsive_focus.dart';
 
@@ -21,6 +22,7 @@ class GameScreen extends StatelessWidget {
             ),
             child: ResponsiveFocus(
               largeChild: LargeGameScreen(),
+              miniChild: MiniGameScreen(),
             ),
           );
         },
@@ -48,10 +50,7 @@ class LargeGameScreen extends StatelessWidget {
             children: <Widget>[
               Spacer(flex: 3),
               SizedBox(height: 30.0),
-              Text(
-                'Schlange!',
-                style: textTheme.headline1,
-              ),
+              Text('Schlange!', style: textTheme.headline1),
               SizedBox(height: 15.0),
               ScoreDisplayer(textTheme: textTheme),
               SizedBox(height: 15.0),
@@ -67,8 +66,43 @@ class LargeGameScreen extends StatelessWidget {
   }
 }
 
-class ProgressDisplayer extends StatelessWidget {
-  const ProgressDisplayer({
+class MiniGameScreen extends StatelessWidget {
+  const MiniGameScreen({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: FittedBox(
+        child: SizedBox(
+          height: 800.0,
+          width: 500.0,
+          child: Column(
+            children: <Widget>[
+              Spacer(flex: 3),
+              SizedBox(height: 30.0),
+              Text('Schlange!', style: textTheme.headline1),
+              SizedBox(height: 15.0),
+              InformationPanel(textTheme: textTheme),
+              SizedBox(height: 15.0),
+              GameBoard(),
+              SizedBox(height: 20.0),
+              ControlPanel(),
+              Spacer(flex: 20),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class InformationPanel extends StatelessWidget {
+  const InformationPanel({
     Key key,
     @required this.textTheme,
   }) : super(key: key);
@@ -78,6 +112,89 @@ class ProgressDisplayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      width: BLOCK_WIDTH * BOARD_WIDTH,
+      child: Row(
+        children: <Widget>[
+          SizedBox(
+            width: BLOCK_WIDTH * BOARD_WIDTH / 2,
+            child: ScoreDisplayer(textTheme: textTheme),
+          ),
+          ProgressDisplayer(textTheme: textTheme),
+        ],
+      ),
+    );
+  }
+}
+
+class ControlPanel extends StatelessWidget {
+  const ControlPanel({
+    Key key,
+  }) : super(key: key);
+
+  final distance = 125.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final game = Provider.of<GameChangeNotifier>(context, listen: false);
+    return Stack(
+      children: <Widget>[
+        SizedBox(height: distance, width: distance),
+        Positioned(
+          top: 0.0,
+          child: SizedBox(
+            width: distance,
+            child: ButtonUp(
+              onPressed: () => game.currentDirection = Direction.up,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 0.0,
+          child: SizedBox(
+            width: distance,
+            child: ButtonDown(
+              onPressed: () => game.currentDirection = Direction.down,
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0.0,
+          child: SizedBox(
+            height: distance,
+            child: ButtonLeft(
+              onPressed: () => game.currentDirection = Direction.left,
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0.0,
+          child: SizedBox(
+            height: distance,
+            child: ButtonRight(
+              onPressed: () => game.currentDirection = Direction.right,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ProgressDisplayer extends StatelessWidget {
+  const ProgressDisplayer({
+    Key key,
+    @required this.textTheme,
+    this.width,
+  })  : assert(textTheme != null),
+        super(key: key);
+
+  final TextTheme textTheme;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -99,13 +216,17 @@ class ScoreDisplayer extends StatelessWidget {
   const ScoreDisplayer({
     Key key,
     @required this.textTheme,
-  }) : super(key: key);
+    this.width,
+  })  : assert(textTheme != null),
+        super(key: key);
 
   final TextTheme textTheme;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
+      width: width,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

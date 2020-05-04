@@ -9,10 +9,13 @@ class ResponsiveFocus extends StatefulWidget {
   const ResponsiveFocus({
     Key key,
     @required this.largeChild,
+    @required this.miniChild,
   })  : assert(largeChild != null),
+        assert(miniChild != null),
         super(key: key);
 
   final Widget largeChild;
+  final Widget miniChild;
 
   @override
   _ResponsiveFocusState createState() => _ResponsiveFocusState();
@@ -37,6 +40,7 @@ class _ResponsiveFocusState extends State<ResponsiveFocus> {
         onKey: _onKeyPressed,
         child: ResponsiveLayout(
           largeChild: widget.largeChild,
+          miniChild: widget.miniChild,
         ),
       ),
     );

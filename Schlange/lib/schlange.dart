@@ -1,4 +1,3 @@
-import 'package:Schlange/feature/landing/presentation/screens/landing_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'feature/game/presentation/screens/game_screen.dart';
