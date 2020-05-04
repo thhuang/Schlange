@@ -86,7 +86,7 @@ class MiniGameScreen extends StatelessWidget {
               Spacer(flex: 3),
               SizedBox(height: 30.0),
               Text('Schlange!', style: textTheme.headline1),
-              SizedBox(height: 15.0),
+              SizedBox(height: 20.0),
               InformationPanel(textTheme: textTheme),
               SizedBox(height: 15.0),
               GameBoard(),
@@ -131,7 +131,7 @@ class ControlPanel extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final distance = 125.0;
+  final distance = 150.0;
 
   @override
   Widget build(BuildContext context) {

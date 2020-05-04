@@ -40,7 +40,7 @@ class OptionButton extends StatelessWidget {
       icon: Icon(
         iconData,
         color: color ?? Theme.of(context).primaryColor,
-        size: 20.0,
+        size: 30.0,
       ),
       onPressed: onPressed,
       padding: EdgeInsets.all(10.0),
