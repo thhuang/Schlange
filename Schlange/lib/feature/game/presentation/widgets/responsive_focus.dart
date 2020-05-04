@@ -47,10 +47,10 @@ class _ResponsiveFocusState extends State<ResponsiveFocus> {
   }
 
   void _onPanUpdate(DragUpdateDetails detail) {
-    final up = detail.delta.dy < -7.0;
-    final down = detail.delta.dy > 7.0;
-    final left = detail.delta.dx < -7.0;
-    final right = detail.delta.dx > 7.0;
+    final up = detail.delta.dy < -13.0;
+    final down = detail.delta.dy > 13.0;
+    final left = detail.delta.dx < -13.0;
+    final right = detail.delta.dx > 13.0;
 
     var game = Provider.of<GameChangeNotifier>(
       context,

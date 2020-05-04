@@ -44,8 +44,8 @@ class LargeGameScreen extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: FittedBox(
         child: SizedBox(
-          height: 700.0,
-          width: 500.0,
+          height: BLOCK_HEIGHT * BOARD_HEIGHT + 350.0,
+          width: BLOCK_WIDTH * BOARD_WIDTH + 150.0,
           child: Column(
             children: <Widget>[
               Spacer(flex: 3),
@@ -79,20 +79,17 @@ class MiniGameScreen extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child: FittedBox(
         child: SizedBox(
-          height: 800.0,
-          width: 500.0,
+          height: BLOCK_HEIGHT * BOARD_HEIGHT + 250.0,
+          width: BLOCK_WIDTH * BOARD_WIDTH + 60.0,
           child: Column(
             children: <Widget>[
               Spacer(flex: 3),
-              SizedBox(height: 30.0),
               Text('Schlange!', style: textTheme.headline1),
               SizedBox(height: 20.0),
               InformationPanel(textTheme: textTheme),
               SizedBox(height: 15.0),
               GameBoard(),
-              SizedBox(height: 20.0),
-              ControlPanel(),
-              Spacer(flex: 20),
+              Spacer(flex: 7),
             ],
           ),
         ),
