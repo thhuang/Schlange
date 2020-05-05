@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../settings.dart';
 import '../logicholders/game_change_notifier.dart';
-import '../widgets/custom_buttons.dart';
 import '../widgets/game_board.dart';
 import '../widgets/responsive_focus.dart';
 
@@ -119,60 +118,6 @@ class InformationPanel extends StatelessWidget {
           ProgressDisplayer(textTheme: textTheme),
         ],
       ),
-    );
-  }
-}
-
-class ControlPanel extends StatelessWidget {
-  const ControlPanel({
-    Key key,
-  }) : super(key: key);
-
-  final distance = 150.0;
-
-  @override
-  Widget build(BuildContext context) {
-    final game = Provider.of<GameChangeNotifier>(context, listen: false);
-    return Stack(
-      children: <Widget>[
-        SizedBox(height: distance, width: distance),
-        Positioned(
-          top: 0.0,
-          child: SizedBox(
-            width: distance,
-            child: ButtonUp(
-              onPressed: () => game.currentDirection = Direction.up,
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 0.0,
-          child: SizedBox(
-            width: distance,
-            child: ButtonDown(
-              onPressed: () => game.currentDirection = Direction.down,
-            ),
-          ),
-        ),
-        Positioned(
-          left: 0.0,
-          child: SizedBox(
-            height: distance,
-            child: ButtonLeft(
-              onPressed: () => game.currentDirection = Direction.left,
-            ),
-          ),
-        ),
-        Positioned(
-          right: 0.0,
-          child: SizedBox(
-            height: distance,
-            child: ButtonRight(
-              onPressed: () => game.currentDirection = Direction.right,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
